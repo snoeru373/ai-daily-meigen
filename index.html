@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI名言メーカー</title>
+  <meta name="description" content="気分に合わせて心に響く名言をランダム生成するAI名言メーカー">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      background: #fff8f0;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    select, button {
+      font-size: 1.1rem;
+      padding: 0.6rem 1rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #f7b733;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #fc4a1a;
+    }
+    #quote {
+      margin-top: 2rem;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #2c3e50;
+      min-height: 3rem;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌞 AI名言メーカー</h1>
+  <p>今の気分を選んで、心に響く一言を受け取ろう。</p>
+
+  <select id="mood">
+    <option>元気いっぱい</option>
+    <option>なんとなく憂鬱</option>
+    <option>やる気満々</option>
+    <option>落ち込み気味</option>
+    <option>ひとり時間が心地いい</option>
+    <option>挑戦したい</option>
+    <option>不安が大きい</option>
+    <option>穏やかな気分</option>
+    <option>焦りを感じる</option>
+    <option>いつも通りの平常心</option>
+  </select>
+  <br>
+  <button onclick="generateQuote()">名言を表示</button>
+
+  <div id="quote">👇ここに名言が表示されます</div>
+
+  <footer>
+    <p>© 2025 snoeru373｜MIT License</p>
+  </footer>
+
+  <script>
+    const meigenData = {
+      "元気いっぱい": {
+        start: ["今日のあなたは", "その笑顔が", "気持ちが前を向いているなら"],
+        end: ["どんな困難も乗り越えられる。", "誰かの元気になってるよ。", "そのまま突き進んで大丈夫。"]
+      },
+      "なんとなく憂鬱": {
+        start: ["心が曇っている日も", "静かな時間が", "どんな気分でも"],
+        end: ["あなたを少しずつ癒してくれる。", "意味のある日になるよ。", "無理しなくて大丈夫。"]
+      },
+      "やる気満々": {
+        start: ["やる気がみなぎっているときこそ", "挑戦する気持ちがあるなら", "今日のあなたには"],
+        end: ["チャンスを引き寄せられる。", "目標に一歩近づける日になる。", "流れをつくる力がある。"]
+      },
+      "落ち込み気味": {
+        start: ["落ち込んでいるときは", "心が沈む日こそ", "そんな日があるからこそ"],
+        end: ["新しい気づきがある。", "無理せずゆっくり過ごして。", "少しずつ回復できるよ。"]
+      },
+      "ひとり時間が心地いい": {
+        start: ["ひとりの時間が", "静けさに包まれたとき", "誰にも会わない日でも"],
+        end: ["心が整っていく。", "大切なエネルギーになるよ。", "自分らしさが戻ってくる。"]
+      },
+      "挑戦したい": {
+        start: ["新しいことに挑むときは", "不安より期待が大きいなら", "一歩踏み出せば"],
+        end: ["道は自然と開けていく。", "自信はあとからついてくる。", "今日がその始まりになる。"]
+      },
+      "不安が大きい": {
+        start: ["不安を感じているときは", "先が見えなくても", "怖がらなくていいよ"],
+        end: ["一歩ずつが力になるから。", "今は立ち止まっても大丈夫。", "支えてくれる人はきっといる。"]
+      },
+      "穏やかな気分": {
+        start: ["穏やかな気分の日は", "心が落ち着いているなら", "静かな一日こそ"],
+        end: ["小さな幸せに気づける。", "周りにもその空気が伝わるよ。", "心が満たされていく。"]
+      },
+      "焦りを感じる": {
+        start: ["焦りを感じているなら", "うまくいかないときでも", "自分を急かさないで"],
+        end: ["進んでる証拠だよ。", "深呼吸すれば道が見える。", "少しずつ整えていけばいい。"]
+      },
+      "いつも通りの平常心": {
+        start: ["変わらない日々の中に", "平凡な一日でも", "今日も変わらず"],
+        end: ["安心できるものがある。", "積み重ねが力になる。", "大切な一歩になってるよ。"]
+      }
+    };
+
+    let recent = [];
+
+    function generateQuote() {
+      const mood = document.getElementById("mood").value;
+      const starts = meigenData[mood].start;
+      const ends = meigenData[mood].end;
+      let quote;
+      let attempts = 0;
+      do {
+        const start = starts[Math.floor(Math.random() * starts.length)];
+        const end = ends[Math.floor(Math.random() * ends.length)];
+        quote = start + "、" + end;
+        attempts++;
+      } while (recent.includes(quote) && attempts < 10);
+
+      recent.push(quote);
+      if (recent.length > 5) recent.shift();
+
+      document.getElementById("quote").innerText = quote;
+    }
+  </script>
+</body>
+</html>
